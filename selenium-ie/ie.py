@@ -6,17 +6,19 @@
  
 from selenium import webdriver
 
+from selenium.webdriver.support.ui import WebDriverWait
+
 import time
 import sys 
 
  
-def capture(url, save_fn="./public/IE.png"):
+def capture(url, save_fn="./public/IE8.png"):
 
 
 
     browser = webdriver.Ie() 
     browser.set_window_size(1920, 900)
-    browser.get(url) 
+    browser.get(url)
     browser.execute_script("""
         (function () {
             var y = 0;

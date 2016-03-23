@@ -24,12 +24,15 @@
     </p>
     <div><h1>FireFox</h1><img src="/loading.gif" class="loading"/><img id="ff" width="100%" class="screenshot"/></div>
     <div><h1>Chrome</h1><img src="/loading.gif" class="loading"/><img id="chrome" width="100%" class="screenshot"/></div>
-    <div><h1>IE8</h1><img src="/loading.gif" class="loading"/><img id="ie8" width="100%" class="screenshot"/></div>
+    <div style="clear:both;"></div>
+    <div><h1>XP IE8</h1>图裂的话请按<button type="button" id="refresh">刷新</button><img src="/loading.gif" class="loading"/><img id="ie8" width="100%" class="screenshot"/></div>
+    <div><h1>IE9 is coming</h1><!-- <img src="/loading.gif" class="loading"/><img id="ie9" width="100%" class="screenshot"/> --></div>
     <script type="text/javascript">
     $(".loading").hide();
     $("#ff").hide();
     $("#chrome").hide();
     $("#ie8").hide();
+    $("#ie9").hide();
     var strRegex = "(https|http)?://"  
         + "?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?" //ftp的user@  
         + "(([0-9]{1,3}\.){3}[0-9]{1,3}" // IP形式的URL- 199.194.52.184  
@@ -79,6 +82,34 @@
           });
 		    }
 		});
+
+    $("#refresh").on('click', function(){
+        $(".loading").hide();
+        $("#ie8").hide().attr("src","");
+        var url=$("#url").val();
+        if (url == null || url == "") {
+            alert("网址不能为空");
+        }
+        else if(!re.test(url)){
+            alert("网址不正确");
+        }
+        else{
+          $(".loading").eq(2).show();          
+          $.ajax({
+            url : "http://192.168.4.219:8100/getUrlIE",
+            dataType : "jsonp",
+            jsonp: "callback",
+            data: {
+                url: encodeURIComponent(url)
+            },
+            success : function(result){
+                $(".loading").eq(2).hide();
+                $("#ie8").show().attr("src","http://192.168.4.219:8100/"+result.ie);
+            }
+          });
+        }
+    });
+
   	</script>
   </body>
 </html>

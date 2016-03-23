@@ -11,6 +11,6 @@ page.open(system.args[1], function (status) {
         window.setTimeout(function () {
             page.render("./public/chrome.png");
 			phantom.exit();
-        }, 1000); // Change timeout as required to allow sufficient time 
+        }, 1000);
     }
 });

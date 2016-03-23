@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-#
-# author: oldj <oldj.wu@gmail.com>
-# blog: http://oldj.net
-#
- 
+
 from selenium import webdriver
 
 from selenium.webdriver.support.ui import WebDriverWait

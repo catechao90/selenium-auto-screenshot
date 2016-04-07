@@ -115,7 +115,10 @@
                         $(".reponsive").find(".loading").hide();
                         var html = "";
                         for(var i = 0;i<result.data.length;i++){
-                            html = html + '<div class="reponsive append"><h1>'+result.data[i].sub+'</h1><a href="'+result.data[i].full+'" target="_blank"><img src="'+result.data[i].full+'" style="max-width:40%;"/></a>&nbsp;<a href="'+result.data[i].screen+'" target="_blank"><img src="'+result.data[i].screen+'" style="max-width:40%;"/></a></div>'
+                            html = html + '<div class="reponsive append"><h1>'+result.data[i].sub+'</h1><a href="'+result.data[i].full+'" target="_blank"><img src="'+result.data[i].full+'" style="max-width:40%;"/></a>&nbsp;<a href="'+result.data[i].screen+'" target="_blank"><img src="'+result.data[i].screen+'" style="max-width:40%;"/></a></div>';
+                            if(i%2==1){
+                                html = html + '<div class="reponsive append" style="clear:both;"></div>';
+                            }
                         }
                         $(".reponsive").last().after(html);                      
                     })

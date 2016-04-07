@@ -21,7 +21,7 @@
     <p>
         <textarea placeholder="请输入需要测试的网页地址，如：http://www.zhan.com" id="url" cols="100"></textarea><br/>
         <input type="radio" name="type" value="0" checked> 浏览器兼容性
-        <input type="radio" name="type" value="1"> 响应式（手机+PC端）<br/><br/>
+        <input type="radio" name="type" value="1"> 移动端（响应式）<br/><br/>
         <button type="button" id="submit">提交</button>
     </p>
     <div class="compability"><h1>浏览器兼容性</h1></div>
@@ -32,7 +32,7 @@
     <div class="compability"><h1>XP IE8</h1>图裂的话请按<button type="button" id="refresh">刷新</button><img src="/loading.gif" class="loading"/><img id="ie8" width="100%" class="screenshot"/></div>
     <div class="compability"><h1>Win7 IE9</h1>图裂的话请按<button type="button" id="refresh9">刷新</button><img src="/loading.gif" class="loading"/><img id="ie9" width="100%" class="screenshot"/></div>
 
-    <div class="reponsive"><h1>响应式（手机+PC端）  PS:点击图片查看大图</h1></div>
+    <div class="reponsive"><h1>移动端（响应式）  PS:点击图片查看大图，页面太长会导致api超时</h1></div>
     <div class="reponsive" style="clear:both;"></div>
     <div class="reponsive"><img src="/loading.gif" class="loading"/></div>
 
@@ -108,13 +108,20 @@
                 }
                 else{
                     $(".reponsive").find(".loading").show();
-                    $.post("/postResponsive",{url:encodeURIComponent(url)},function(result){
+                    $(".append").remove();
+
+                    $.post("/postResponsive", {url:encodeURIComponent(url)})
+                    .done(function(result){
                         $(".reponsive").find(".loading").hide();
                         var html = "";
                         for(var i = 0;i<result.data.length;i++){
-                            html = html + '<div class="reponsive"><h1>'+result.data[i].sub+'</h1><a href="'+result.data[i].full+'" target="_blank"><img src="'+result.data[i].full+'" style="max-width:40%;"/></a>&nbsp;<a href="'+result.data[i].screen+'" target="_blank"><img src="'+result.data[i].screen+'" style="max-width:40%;"/></a></div>'
+                            html = html + '<div class="reponsive append"><h1>'+result.data[i].sub+'</h1><a href="'+result.data[i].full+'" target="_blank"><img src="'+result.data[i].full+'" style="max-width:40%;"/></a>&nbsp;<a href="'+result.data[i].screen+'" target="_blank"><img src="'+result.data[i].screen+'" style="max-width:40%;"/></a></div>'
                         }
                         $(".reponsive").last().after(html);                      
+                    })
+                    .fail(function(xhr, textStatus, errorThrown) {
+                        alert("超时了请重新提交");
+                        $(".reponsive").find(".loading").hide();
                     });
                 }
                 

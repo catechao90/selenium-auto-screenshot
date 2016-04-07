@@ -19,15 +19,25 @@
     <h1><%= title %></h1>  
     create by: <a href="mailto:cate.zhao@zhan.com">Cate Zhao</a>
     <p>
-    	<textarea placeholder="请输入需要测试的网页地址，如：http://www.zhan.com" id="url" cols="100"></textarea>
-		  <button type="button" id="submit">提交</button>
+        <textarea placeholder="请输入需要测试的网页地址，如：http://www.zhan.com" id="url" cols="100"></textarea><br/>
+        <input type="radio" name="type" value="0" checked> 浏览器兼容性
+        <input type="radio" name="type" value="1"> 响应式（手机+PC端）<br/><br/>
+        <button type="button" id="submit">提交</button>
     </p>
-    <div><h1>FireFox</h1><img src="/loading.gif" class="loading"/><img id="ff" width="100%" class="screenshot"/></div>
-    <div><h1>Chrome</h1><img src="/loading.gif" class="loading"/><img id="chrome" width="100%" class="screenshot"/></div>
-    <div style="clear:both;"></div>
-    <div><h1>XP IE8</h1>图裂的话请按<button type="button" id="refresh">刷新</button><img src="/loading.gif" class="loading"/><img id="ie8" width="100%" class="screenshot"/></div>
-    <div><h1>IE9 is coming</h1><!-- <img src="/loading.gif" class="loading"/><img id="ie9" width="100%" class="screenshot"/> --></div>
+    <div class="compability"><h1>浏览器兼容性</h1></div>
+    <div class="compability" style="clear:both;"></div>
+    <div class="compability"><h1>FireFox</h1><img src="/loading.gif" class="loading"/><img id="ff" width="100%" class="screenshot"/></div>
+    <div class="compability"><h1>Chrome</h1><img src="/loading.gif" class="loading"/><img id="chrome" width="100%" class="screenshot"/></div>
+    <div class="compability" style="clear:both;"></div>
+    <div class="compability"><h1>XP IE8</h1>图裂的话请按<button type="button" id="refresh">刷新</button><img src="/loading.gif" class="loading"/><img id="ie8" width="100%" class="screenshot"/></div>
+    <div class="compability"><h1>Win7 IE9</h1>图裂的话请按<button type="button" id="refresh9">刷新</button><img src="/loading.gif" class="loading"/><img id="ie9" width="100%" class="screenshot"/></div>
+
+    <div class="reponsive"><h1>响应式（手机+PC端）  PS:点击图片查看大图</h1></div>
+    <div class="reponsive" style="clear:both;"></div>
+    <div class="reponsive"><img src="/loading.gif" class="loading"/></div>
+
     <script type="text/javascript">
+    $(".reponsive").hide();
     $(".loading").hide();
     $("#ff").hide();
     $("#chrome").hide();
@@ -45,41 +55,70 @@
         + "(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";
     var re=new RegExp(strRegex);    
 		$("#submit").on('click', function(){
-        $(".loading").hide();
-        $("#ff").hide().attr("src","");
-        $("#chrome").hide().attr("src","");
-        $("#ie8").hide().attr("src","");
+            $(".loading").hide();
+            $("#ff").hide().attr("src","");
+            $("#chrome").hide().attr("src","");
+            $("#ie8").hide().attr("src","");
+            $("#ie9").hide().attr("src","");
 		  	var url=$("#url").val();
 		  	if (url == null || url == "") {
 		        alert("网址不能为空");
 		    }
-        else if(!re.test(url)){
-            alert("网址不正确");
-        }
-		    else{
-          $(".loading").show();
-		    	$.post("/postUrlFF",{url:encodeURIComponent(url)},function(result){
-            $(".loading").eq(0).hide();
-		    		$("#ff").show().attr("src","/"+result.ff);
-		  		});
-
-          $.post("/postUrlChrome",{url:encodeURIComponent(url)},function(result){
-            $(".loading").eq(1).hide();
-            $("#chrome").show().attr("src","/"+result.chorme);
-          });
-
-          $.ajax({
-            url : "http://192.168.4.219:8100/getUrlIE",
-            dataType : "jsonp",
-            jsonp: "callback",
-            data: {
-                url: encodeURIComponent(url)
-            },
-            success : function(result){
-                $(".loading").eq(2).hide();
-                $("#ie8").show().attr("src","http://192.168.4.219:8100/"+result.ie);
+            else if(!re.test(url)){
+                alert("网址不正确");
             }
-          });
+		    else{
+                if($('input[name=type]:checked').val()==="0"){
+                    $(".loading").show();
+                    $.post("/postUrlFF",{url:encodeURIComponent(url)},function(result){
+                        $(".loading").eq(0).hide();
+                        $("#ff").show().attr("src","/"+result.ff);
+                    });
+
+                    $.post("/postUrlChrome",{url:encodeURIComponent(url)},function(result){
+                        $(".loading").eq(1).hide();
+                        $("#chrome").show().attr("src","/"+result.chorme);
+                    });
+
+                    $.ajax({
+                        url : "http://192.168.4.219:8100/getUrlIE",
+                        dataType : "jsonp",
+                        jsonp: "callback",
+                        data: {
+                            url: encodeURIComponent(url)
+                        },
+                        success : function(result){
+                            $(".loading").eq(2).hide();
+                            $("#ie8").show().attr("src","http://192.168.4.219:8100/"+result.ie);
+                        }
+                    });
+
+                    $.ajax({
+                        url : "http://192.168.4.55:8100/getUrlIE",
+                        dataType : "jsonp",
+                        jsonp: "callback",
+                        data: {
+                            url: encodeURIComponent(url)
+                        },
+                        success : function(result){
+                            $(".loading").eq(3).hide();
+                            $("#ie9").show().attr("src","http://192.168.4.55:8100/"+result.ie);
+                        }
+                    });
+                }
+                else{
+                    $(".reponsive").find(".loading").show();
+                    $.post("/postResponsive",{url:encodeURIComponent(url)},function(result){
+                        $(".reponsive").find(".loading").hide();
+                        var html = "";
+                        for(var i = 0;i<result.data.length;i++){
+                            html = html + '<div class="reponsive"><h1>'+result.data[i].sub+'</h1><a href="'+result.data[i].full+'" target="_blank"><img src="'+result.data[i].full+'" style="max-width:40%;"/></a>&nbsp;<a href="'+result.data[i].screen+'" target="_blank"><img src="'+result.data[i].screen+'" style="max-width:40%;"/></a></div>'
+                        }
+                        $(".reponsive").last().after(html);                      
+                    });
+                }
+                
+		    	
 		    }
 		});
 
@@ -110,6 +149,44 @@
         }
     });
 
+    $("#refresh9").on('click', function(){
+        $(".loading").hide();
+        $("#ie9").hide().attr("src","");
+        var url=$("#url").val();
+        if (url == null || url == "") {
+            alert("网址不能为空");
+        }
+        else if(!re.test(url)){
+            alert("网址不正确");
+        }
+        else{
+          $(".loading").eq(3).show();          
+          $.ajax({
+                url : "http://192.168.4.55:8100/getUrlIE",
+                dataType : "jsonp",
+                jsonp: "callback",
+                data: {
+                    url: encodeURIComponent(url)
+                },
+                success : function(result){
+                    $(".loading").eq(3).hide();
+                    $("#ie9").show().attr("src","http://192.168.4.55:8100/"+result.ie);
+                }
+            });
+        }
+    });
+
+
+    $('input[name=type]').on('click',function(){
+        if($('input[name=type]:checked').val()==='1'){
+            $(".reponsive").show();
+            $(".compability").hide();
+        }
+        else{
+            $(".reponsive").hide();
+            $(".compability").show();
+        }
+    });
   	</script>
   </body>
 </html>
